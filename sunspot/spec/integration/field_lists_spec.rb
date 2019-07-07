@@ -31,6 +31,22 @@ describe 'fields lists' do
     end
   end
 
+  it 'when listing existing text fields it should not raise Sunspot::UnrecognizedFieldError' do
+    expect do
+      Sunspot.search(Post) {
+        field_list(:body) 
+      }
+    end.to_not raise_error
+  end
+
+  it 'when listing non-existing text fields it should raise Sunspot::UnrecognizedFieldError' do
+    expect do
+      Sunspot.search(Post) {
+        field_list(:bogus_body)
+      }
+    end.to raise_error(Sunspot::UnrecognizedFieldError)
+  end
+
   it 'does not load any stored fields' do
     hit = Sunspot.search(Post) { without_stored_fields }.hits.first
 
